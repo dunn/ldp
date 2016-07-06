@@ -114,28 +114,28 @@ module Ldp::Client::Methods
   private
 
   def check_for_errors resp
-    resp.tap do |resp|
-      unless resp.success?
-        raise case resp.status
+    resp.tap do |res|
+      unless res.success?
+        raise case res.status
           when 400
-            if resp.env.method == :head
+            if res.env.method == :head
               # If the request was a HEAD request (which only retrieves HTTP headers),
               # re-run it as a GET in order to retrieve a message body (which is passed on as the error message)
-              get(resp.env.url.path)
+              get(res.env.url.path)
             else
-              Ldp::BadRequest.new(resp.body)
+              Ldp::BadRequest.new(res.body)
             end
           when 404
-            Ldp::NotFound.new(resp.body)
+            Ldp::NotFound.new(res.body)
           when 409
-            Ldp::Conflict.new(resp.body)
+            Ldp::Conflict.new(res.body)
           when 410
-            Ldp::Gone.new(resp.body)
+            Ldp::Gone.new(res.body)
           when 412
-            Ldp::EtagMismatch.new(resp.body)
+            Ldp::EtagMismatch.new(res.body)
           else
-            Ldp::HttpError.new("STATUS: #{resp.status} #{resp.body[0, 1000]}...")
-          end
+            Ldp::HttpError.new("STATUS: #{res.status} #{res.body[0, 1000]}...")
+              end
       end
     end
   end
