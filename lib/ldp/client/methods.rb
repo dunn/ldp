@@ -123,16 +123,16 @@ module Ldp::Client::Methods
               # re-run it as a GET in order to retrieve a message body (which is passed on as the error message)
               get(res.env.url.path)
             else
-              Ldp::BadRequest.new(res.body)
+              Ldp::BadRequest.new("#{res.env.url}: #{res.body}")
             end
           when 404
-            Ldp::NotFound.new(res.body)
+            Ldp::NotFound.new("#{res.env.url}: #{res.body}")
           when 409
-            Ldp::Conflict.new(res.body)
+            Ldp::Conflict.new("#{res.env.url}: #{res.body}")
           when 410
-            Ldp::Gone.new(res.body)
+            Ldp::Gone.new("#{res.env.url}: #{res.body}")
           when 412
-            Ldp::EtagMismatch.new(res.body)
+            Ldp::EtagMismatch.new("#{res.env.url}: #{res.body}")
           else
             Ldp::HttpError.new("STATUS: #{res.status} #{res.body[0, 1000]}...")
               end
